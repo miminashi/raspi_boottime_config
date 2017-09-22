@@ -1,0 +1,12 @@
+[Unit]
+Description=Run raspi-config on startup
+After=raspi-config.service
+#Before=multi-user.target
+Before=avahi-daemon.service
+
+[Service]
+Type=forking
+ExecStart=/usr/sbin/raspi-boottime-config
+
+[Install]
+WantedBy=default.target

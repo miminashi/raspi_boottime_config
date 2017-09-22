@@ -1,0 +1,22 @@
+#!/bin/sh
+#
+# debug
+#   bash -x raspi-boottime-config
+#
+
+HOSTNAME_PATH=/boot/hostname
+
+# hostname
+if [ -s ${HOSTNAME_PATH} ]; then
+  : "${HOSTNAME_PATH} exists and nonzero";
+  new_hostname=`cat ${HOSTNAME_PATH}`
+  /usr/bin/raspi-config nonint do_hostname ${new_hostname}
+  hostname ${new_hostname}
+  active_state=`systemctl show --property=ActiveState --value avahi-daemon`
+  if [ ${active_state} == "active" ]; then
+    systemctl restart avahi-daemon.service
+  fi
+else
+  : "${HOSTNAME_PATH} not exists or empty";
+fi
+
